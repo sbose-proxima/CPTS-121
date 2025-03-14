@@ -74,7 +74,7 @@ void start_game(){
     int input_count = 0;
 
     for(int round = 0; round < 13; round++){
-        //system("clear");
+        system("clear"); // must be changed to 'cls' for windows
         num_rolls = 0;
         input_count = 0;
         printf("\n----- Round %d -----\n", round + 1);
@@ -105,18 +105,25 @@ void start_game(){
 
         if (y_n_reroll == 'y'){
             printf("Type the numbers of the dice you want to re-roll, separated by spaces.\n");
-            
+
+            input_count = 0;
+
             while (input_count < 5){
                 int index;
-                scanf("%d", &index);
-                if (index == -1)
+                if (scanf("%d", &index) == 1){
+                    if (index == -1){
+                        break;
+                    }
+                    if (index >= 1 && index <= 5){
+                        dice[index-1] = roll_dice();
+                    }
+                    input_count++;
+                } else {
                     break;
-                if (index >= 1 && index <= 5){
-                    dice[index - 1] = roll_dice();
                 }
-                input_count++;
             }
-
+            
+        
 
 
 
@@ -124,16 +131,18 @@ void start_game(){
             for(int i=0; i<5; i++){
                 printf("%d", dice[i]);
             }
-            printf("\n");
+            //printf("\n");
         
             num_rolls++;
             }
+
+
             else {
                 break;
             }
         }
 
- printf("The sum of your dice is: %d\n", sum_dice(dice));
+ //printf("The sum of your dice is: %d\n", sum_dice(dice));
 
 
 
@@ -151,6 +160,7 @@ void start_game(){
        }
     
 
+    
         printf("Please choose which game combination you would like to score in, refer to rules to what integer to type for each combination:\n");
         
         
@@ -202,7 +212,6 @@ void start_game(){
         printf("Player 1 Total: %d player 1 upper: %d\n", player1_score, player1_upperscore);
         printf("Player 2 Total: %d, player 2 upper: %d\n", player2_score, player2_upperscore);
 
-        system("pause");
         change_player(&current_player);
     }
     }
@@ -369,7 +378,9 @@ int yahtzee(int dice[], int *score, int player_combinations[13]){
             break;
 
         }
+
     }
+    return *score;
     }
 
 
