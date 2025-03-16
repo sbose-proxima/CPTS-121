@@ -28,8 +28,8 @@ void print_rules(){
     printf("9. Full House\n");
     printf("10. Small Straight\n");
     printf("11. Large Straight");
-    printf("Yahtzee!");
-    printf("Chance!");
+    printf("12. Yahtzee!");
+    printf("13. Chance!");
 
 
     }
@@ -66,7 +66,7 @@ void start_game(){
     int player1_upperscore = 0, player2_upperscore = 0;
     int current_player = 1;
 
-    int dice[5];
+    int dice[5] = {1,2,3,4,5};
     int dice_to_reroll[5];
     char y_n_reroll;
     int num_rolls = 0;
@@ -93,33 +93,40 @@ void start_game(){
     }
     printf("Your roll produced: ");
     for (int i=0; i<5; i++){
-        printf("%d", dice[i]);
+        printf("%d ", dice[i]);
     }
     printf("\n");
     }
 
     while (num_rolls < max_rolls){
         printf("Do you want to re-roll any dice? Type 'y' if yes or 'n' if no.\n");
+        getchar(); // this line was obtained with the help of a friend 
         scanf(" %c", &y_n_reroll);
+        // while (getchar() != '\n');
+       
         
 
         if (y_n_reroll == 'y'){
-            printf("Type the numbers of the dice you want to re-roll, separated by spaces.\n");
+            printf("Type the numbers of the dice you want to re-roll, separated by spaces. Enter -1 to indicate when you are done typing the dice you want to re-roll\n");
 
             input_count = 0;
 
             while (input_count < 5){
-                int index;
+                int index = 0;
                 if (scanf("%d", &index) == 1){
                     if (index == -1){
                         break;
                     }
-                    if (index >= 1 && index <= 5){
-                        dice[index-1] = roll_dice();
-                    }
-                    input_count++;
-                } else {
-                    break;
+                    if (index >= 1 && index <= 6){
+                        dice[index - 1] = roll_dice();
+                        input_count++;
+                    
+                    }  
+
+                }
+               else {
+                    printf("Invalid Input.");
+                    while (getchar() != '\n');
                 }
             }
             
@@ -129,15 +136,16 @@ void start_game(){
 
             printf("Here are your new dice values\n");
             for(int i=0; i<5; i++){
-                printf("%d", dice[i]);
+                printf("%d ", dice[i]);
             }
-            //printf("\n");
+            printf("\n");
         
             num_rolls++;
             }
 
 
             else {
+                printf("You chose not to re-roll\n");
                 break;
             }
         }
@@ -160,11 +168,11 @@ void start_game(){
        }
     
 
-    
+        
         printf("Please choose which game combination you would like to score in, refer to rules to what integer to type for each combination:\n");
+      
         
-        
-
+        while (getchar() != '\n');
         int comb_chosen = choose_combinations(player_combinations);
 
         switch (comb_chosen){
@@ -212,6 +220,7 @@ void start_game(){
         printf("Player 1 Total: %d player 1 upper: %d\n", player1_score, player1_upperscore);
         printf("Player 2 Total: %d, player 2 upper: %d\n", player2_score, player2_upperscore);
 
+        system("pause");
         change_player(&current_player);
     }
     }
@@ -222,10 +231,27 @@ void start_game(){
 
 int choose_combinations(int player_combinations[13]){
     int comb_chosen = 0;
+
+    char *combs[13] = {
+        "Sum of all 1s",
+        "Sum of all 2s",
+        "Sum of all 3s",
+        "Sum of all 4s",
+        "Sum of all 5s",
+        "Sum of all 6's (End up Upper Section)",
+        "Three of a Kind (Start of Lower Section)",
+        "Four of a kind",
+        "Full House",
+        "Small straight",
+        "Large straight",
+        "Yahtzee!",
+        "Chance"
+    };
+
     printf("Available game combinations are below");
     for (int i=0; i <13; i++){
         if (player_combinations[i] == 1)
-            printf("%d. Combination %d\n", i+1, i+1);
+            printf("%d. %s\n", i+1, combs[i]);
     }
 
     do {
