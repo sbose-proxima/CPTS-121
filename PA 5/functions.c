@@ -59,6 +59,9 @@ void change_player(int *current_player){
 
 void start_game(){
     printf("Welcome to Yahtzee!\n");
+     printf("Press enter to continue...");
+     while (getchar() != '\n'); // line obtained with help of a friend 
+     getchar(); // line obtained with help of a friend 
 
     
 
@@ -71,15 +74,14 @@ void start_game(){
     int *player_combinations, *score, *upper_score;
 
     int dice[5] = {1,2,3,4,5};
-    // int dice_to_reroll[5];
     char y_n_reroll;
     int num_rolls = 0;
     int max_rolls = 3;
     int input_count = 0;
 
 
-
-    for(int round = 0; round < 13; round++){
+ 
+    for(int round = 0; round < 26; round++){ 
         system("clear"); // must be changed to 'cls' for windows
         num_rolls = 0;
         input_count = 0;
@@ -108,12 +110,11 @@ void start_game(){
         printf("Do you want to re-roll any dice? Type 'y' if yes or 'n' if no.\n");
         getchar(); // this line was obtained with the help of a friend 
         scanf(" %c", &y_n_reroll);
-        // while (getchar() != '\n');
-       
+
         
 
         if (y_n_reroll == 'y'){
-            printf("Type the dice number you want to re-roll, followed by a space, a -1, and another space, then click enter. If you want to re-roll all 5 dice, do not click the -1 at the end, only click enter\n");
+            printf("Type the dice numbers you want to re-roll, separated by spaces. After your last number, hit space, a -1, and another space, then click enter. If you want to re-roll all 5 dice, do not click the -1 at the end, only click enter\n");
             input_count = 0;
 
             while (input_count < 5){
@@ -132,7 +133,7 @@ void start_game(){
                 }
                else {
                     printf("Invalid Input.");
-                    while (getchar() != '\n');
+                    while (getchar() != '\n'); // line obtained with help of a friend 
                 }
             }
             
@@ -178,7 +179,7 @@ void start_game(){
         printf("Please choose which game combination you would like to score in\n");
       
         
-        while (getchar() != '\n');
+        while (getchar() != '\n'); // line obtained with help of a friend 
         int comb_chosen = choose_combinations(player_combinations);
 
         int sums = 0;
@@ -228,8 +229,8 @@ if (*upper_score >= 63){
         printf("Player 2 Total: %d, player 2 upper: %d\n", player2_score, player2_upperscore);
 
         printf("Press enter to continue...");
-        while (getchar() != '\n');
-        getchar();
+        while (getchar() != '\n'); // line obtained with help of a friend 
+        getchar(); // line obtained with help of a friend 
         change_player(&current_player);
     }
 
@@ -285,7 +286,7 @@ int choose_combinations(int player_combinations[13]){
         scanf("%d", &comb_chosen);
     } while (comb_chosen < 1 || comb_chosen > 13 || player_combinations[comb_chosen - 1] ==0);
 
-    player_combinations[comb_chosen - 1] = 0;
+   //  player_combinations[comb_chosen - 1] = 0;
     return comb_chosen;
 
 }
@@ -313,8 +314,9 @@ int three_of_a_kind(int dice[], int *score, int player_combinations[13]){
         int checker = of_a_kind_checker(dice, 3);
         if (checker != 0)
             *score += sum_dice(dice);
-            player_combinations[6] = 0;
+            
         }
+    player_combinations[6] = 0;
     return *score;
 }
 
@@ -324,8 +326,9 @@ int four_of_a_kind(int dice[], int *score, int player_combinations[13]){
     int checker = of_a_kind_checker(dice, 4);
     if (checker == 1)
         *score += sum_dice(dice);
-        player_combinations[7] = 0;
+        
     }
+    player_combinations[7] = 0;
     return *score;
 }
 
@@ -439,6 +442,3 @@ int chance (int dice[], int *score, int player_combinations[13]){
     player_combinations[12] = 0;
     return *score;
 }
-
-
-
