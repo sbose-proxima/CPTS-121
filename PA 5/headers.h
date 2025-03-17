@@ -7,7 +7,7 @@ void print_rules();
 void start_game();
 int roll_dice ();
 int sum_dice(int dice[]);
-int sum_of_num(int dice[], int *score, int num_to_sum);
+int sum_of_num(int dice[], int *score, int num_to_sum, int player_combinations[13]);
 int three_of_a_kind(int dice[], int *score, int player_combinations[13]);
 int four_of_a_kind(int dice[], int *score, int player_combinations[13]);
 int switch_player();
