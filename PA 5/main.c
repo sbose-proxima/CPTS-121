@@ -7,9 +7,9 @@ int main(void){
 
     int game_menu = 0;
 
-    printf("Welcome to Yahtzee!");
+    printf("Welcome to Yahtzee!\n");
     printf("1. Display Rules\n");
-    printf("2. PLay the game\n");
+    printf("2. Play the game\n");
     printf("3. Exit\n");
     printf("Enter your choice: ");
     scanf("%d", &game_menu);
@@ -17,12 +17,27 @@ int main(void){
 
     if (game_menu == 1){
         print_rules();
-        system("pause");
+        int y_n = 0;
+        printf("\nIf you would like to start the game, please press 1 for yes and 2 for no\n");
+        scanf("%d", &y_n);
+        if(y_n == 1){
+            printf("Press enter to continue...");
+            while (getchar() != '\n');
+            getchar();
+            start_game();
+        }
+        else{
+            printf("Exiting!");
+        }
+
+        //system("pause");
     }
 
     else if (game_menu == 2){
         start_game();
-        system("pause");
+        printf("Press enter to continue...");
+        while (getchar() != '\n');
+        getchar();
     }
 
     else if(game_menu == 3){
