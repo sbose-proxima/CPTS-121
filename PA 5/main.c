@@ -6,7 +6,6 @@ int main(void){
 
 
     int game_menu = 0;
-
     printf("Welcome to Yahtzee!\n");
     printf("1. Display Rules\n");
     printf("2. Play the game\n");
