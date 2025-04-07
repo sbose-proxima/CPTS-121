@@ -72,7 +72,7 @@ int select_who_starts_first(){
 }
 
 void log_stats(){
-    FILE *infile = fopen("./Battleship.log", "r");
+    FILE *infile = fopen("./Battleship.log", "a");
     fprintf(infile, "Player 1 stats: \nHits: %d\nMisses: %d\nTotal Shots:%d\nHit/Miss Ratio: %.2f\n\n",
     player1_stats.total_hits, player1_stats.total_misses, player1_stats.total_shots, player1_stats.hit_miss_ratio);
 
@@ -89,7 +89,7 @@ void update_stats(int hit, int current_player){
         stats = &player1_stats;
     }
 
-    if (current_player == 2){
+    else if (current_player == 2){
         stats = &player2_stats;
     }
 
@@ -152,17 +152,25 @@ void check_hit (int x, int y, int current_player){
 
 void player_turn(){
     int x,y;
-    printf("Player 1, enter two numbers as your coordinates to guess, separated by spaces");
-    scanf("%d %d", &x, &y);
+    int valid_guess = 0;
 
+    while(!valid_guess){
+        printf("Player 1, enter two numbers as your coordinates to guess, separated by spaces ");
+        scanf("%d %d", &x, &y);
 
-    if (player2board[y][x] == '-' || player2board[y][x] == 'm' || player2board[y][x] == '*'){
-        check_hit(x, y, 1);
-    } else{
-        printf("You already guessed this spot! Try again.\n");
-        player_turn();
-    }
+        if (x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE){
+            printf("Invalid Coordiantes! Please try again. \n");
+            continue;
+        }
 
+        if (player2board[y][x] == '-' || player2board[y][x] == 'm' || player2board[y][x] == '*'){
+            check_hit(x,y,1);
+            valid_guess = 1;
+        } else{
+            printf("You already guess this spot! Try again!");
+        }
+  }
+    
 }
 
 
@@ -176,8 +184,14 @@ void computer_turn(){
         y = rand() % BOARD_SIZE;
     }
 
-    printf("Computer is guessing coordinates (%d, %d)", x, y);
+    printf("Computer is guessing coordinates (%d, %d)...", x, y);
     check_hit(x,y,2);
+
+    if (player1board[y][x] == '*'){
+        printf("Computer hit a ship!\n");
+    } else{
+        printf("Computer missed!\n");
+    }
 }
 
 
@@ -193,7 +207,7 @@ void startgame(){
 
 
     if (current_player == 2){
-        automatically_place_ships2(&current_player);
+        automatically_place_ships3(&current_player);
     } else{
         printf("Player 1, please type 1 if you would like to manually place your ships, and type 2 if you would like to automatically place your ships! ");
         scanf("%d", &choice);
@@ -400,4 +414,3 @@ void manually_place_ships2(int *current_player){
     }
     
  }
-
