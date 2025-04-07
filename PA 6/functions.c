@@ -150,70 +150,88 @@ void check_hit (int x, int y, int current_player){
 
 
 
-void startgame(){
+void player_turn(){
+    int x,y;
+    printf("Player 1, enter two numbers as your coordinates to guess, separated by spaces");
+    scanf("%d %d", &x, &y);
 
+
+    if (player2board[y][x] == '-' || player2board[y][x] == 'm' || player2board[y][x] == '*'){
+        check_hit(x, y, 1);
+    } else{
+        printf("You already guessed this spot! Try again.\n");
+        player_turn();
+    }
+
+}
+
+
+void computer_turn(){
+    int x, y;
+    x = rand() % BOARD_SIZE;
+    y = rand() % BOARD_SIZE;
+
+    while (player1board[y][x] == 'm' || player1board[y][x] == '*'){
+        x = rand() % BOARD_SIZE;
+        y = rand() % BOARD_SIZE;
+    }
+
+    printf("Computer is guessing coordinates (%d, %d)", x, y);
+    check_hit(x,y,2);
+}
+
+
+
+
+void startgame(){
     initialize_game_board();
     current_player = select_who_starts_first();
+    printf("Player %d goes first", current_player);
 
-    for (int i = 0; i < 2; i++){
-        int choice = 0;
-        printf("Player %d, press 1 to manually place your ships, press 2 to automatically place your ships ", current_player);
-        while (choice != 1 && choice != 2){
-            scanf("%d", &choice);
-        }
+    int choice = 0;
+    
+
+
+    if (current_player == 2){
+        automatically_place_ships2(&current_player);
+    } else{
+        printf("Player 1, please type 1 if you would like to manually place your ships, and type 2 if you would like to automatically place your ships! ");
+        scanf("%d", &choice);
 
         if (choice == 1){
             manually_place_ships2(&current_player);
-        }
-
-        if (choice == 2){
+        } else{
             automatically_place_ships3(&current_player);
         }
 
-        change_player(&current_player);
-        system("clear"); // change to 'cls' for windows
-        }
+    }
 
-while (!all_ships_sunk(player1board) && !all_ships_sunk(player2board)){
+
+
+    while (!all_ships_sunk(player1board) && !all_ships_sunk(player2board)){
+        system("clear");
+
+        printf("Player 1's Board:\n");
+        display_board(player1board);
+    
 
     if (current_player == 1){
-        int reveal = 0;
-        printf("Type 1 to reveal player 1's board!");
-        scanf("%d", &reveal);
-        if (reveal == 1){
-        display_board(player1board);
+        player_turn();
+        if (all_ships_sunk(player2board)){
+            printf("Player 1 wins!");
+            break;
         }
-
-    }
-    if (current_player == 2){
-        int reveal2 = 0;
-        printf("Type 1 to reveal player 2's board!");
-        scanf("%d", &reveal2);
-        if (reveal2 == 1){
-        display_board(player2board);
+    } else{
+        computer_turn();
+        if (all_ships_sunk(player1board)){
+            printf("Computer wins!\n");
+            break;
         }
     }
-
-    int x, y;
-
-    printf("Player %d, enter coordinates to guess, seperated by spaces: ", current_player);
-    scanf("%d %d", &x, &y);
-
-    check_hit(x,y, current_player);
-
-    if (current_player == 1 && all_ships_sunk(player2board)){
-        printf("Player 1 wins!");
-    }
-
-    if (current_player == 2 && all_ships_sunk(player1board)){
-        printf("Player 2 wins!");
-    }
-    change_player(&current_player);
+    change_player(&current_player); 
 }
-    log_stats();
-
-    }
-
+log_stats();
+}
 
 
 
@@ -291,81 +309,6 @@ void automatically_place_ships3(int *current_player){
 
 
 
-void automatically_place_ships2(int *current_player){
-    int ship_sizes[5] = {5, 4, 3, 3, 2};
-    char ship_symbols[5] = {'c', 'b', 'r', 's', 'd'};
-
-    for (int ship = 0; ship < 5; ship++){
-        int size = ship_sizes[ship];
-        char symbol = ship_symbols[ship];
-        int placed = 0;
-
-        while (!placed){
-            int hor_ver = rand() % 2;
-            int coords_x = rand() % 10;
-            int coords_y = rand() % 10;
-            int space_clear = 1;
-
-            if (hor_ver == 0 && coords_x + size <= 10){ // horizontal
-                for (int i = 0; i < size; i++){
-                    if ((*current_player == 1 && player1board[coords_y][coords_x + i] != '-') ||
-                    (*current_player == 2 && player2board[coords_y][coords_x + i] != '-')){
-                        space_clear = 0;
-                        break;
-                    } 
-                }
-
-            if (space_clear){
-                for (int i = 0; i < size; i++){
-                    if (*current_player == 1)
-                        player1board[coords_y][coords_x + i] = symbol;
-
-                    else 
-                        player2board[coords_y][coords_x + i] = symbol;
-                }
-            placed = 1;
-
-            }
-            }  else if (hor_ver == 1 && coords_y + size <= 10){ // vertical
-                for (int i = 0; i < size; i++){
-                    if ((*current_player == 1 && player1board[coords_y+i][coords_x] != '-') ||
-                    (*current_player == 2 && player2board[coords_y+i][coords_x] != '-')){
-                        space_clear = 0;
-                        break;
-                    }
-                }
-            }
-
-
-        if (space_clear){
-                for (int i = 0; i < size; i++){
-                    if (*current_player == 1){
-                        player1board[coords_y + i][coords_x] = symbol;
-                    }
-
-                    else
-                        player2board[coords_y + i][coords_x] = symbol;
-    
-                }
-            placed = 1;
-
-
-
-
-
-            }
-
-
-
-
-
-
-
-    }
-
-}
-
-}
 
 
 void manually_place_ships2(int *current_player){
@@ -457,3 +400,4 @@ void manually_place_ships2(int *current_player){
     }
     
  }
+
