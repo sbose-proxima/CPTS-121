@@ -203,27 +203,22 @@ void startgame(){
     printf("Player %d goes first", current_player);
 
     int choice = 0;
-    
 
 
-    if (current_player == 2){
-        automatically_place_ships3(&current_player);
-    } else{
-        printf("Player 1, please type 1 if you would like to manually place your ships, and type 2 if you would like to automatically place your ships! ");
+    printf("Player 1, please type 1 if you would like to manually place your ships, and type 2 if you would like to automatically place your ships! ");
         scanf("%d", &choice);
 
-        if (choice == 1){
+    if (choice == 1){
             manually_place_ships2(&current_player);
         } else{
             automatically_place_ships3(&current_player);
         }
 
-    }
-
-
+    change_player(&current_player);
+    automatically_place_ships3(&current_player);
 
     while (!all_ships_sunk(player1board) && !all_ships_sunk(player2board)){
-        system("clear");
+       // ("clear");
 
         printf("Player 1's Board:\n");
         display_board(player1board);
