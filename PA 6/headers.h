@@ -14,6 +14,8 @@ int all_ships_sunk (char board[10][10]);
 void automatically_place_ships2(int *current_player);
 void automatically_place_ships3(int *current_player);
 void manually_place_ships2(int *current_player);
+void player_turn();
+void computer_turn();
 
 
 typedef struct {
