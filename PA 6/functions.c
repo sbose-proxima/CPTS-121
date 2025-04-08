@@ -4,7 +4,8 @@
 #define BOARD_SIZE 10
 
 
-
+int carrierCells1[5][2]; //change guessed cells to -1, so if all are hits, then ship is sunk
+int carrierCells2[5][2];
 
 char player1board[BOARD_SIZE][BOARD_SIZE];
 char player2board [BOARD_SIZE][BOARD_SIZE];
@@ -79,6 +80,7 @@ void log_stats(){
     fprintf(infile, "Player 2 stats:\nHits: %d\nMisses: %d\nTotal Shots:%d\nHit/Miss Ratio: %.2f\n\n ", 
     player2_stats.total_hits, player2_stats.total_misses, player2_stats.total_shots, player2_stats.hit_miss_ratio);
 
+    
     fclose(infile);
 }
 
@@ -104,12 +106,21 @@ void update_stats(int hit, int current_player){
     if (stats->total_shots > 0){
         stats->hit_miss_ratio = (float)stats->total_hits/stats->total_misses;
     } else{
-        stats->hit_miss_ratio = 0.0;
+        stats->hit_miss_ratio = (float)stats->total_hits;
     }
 
 }
 
-
+int is_ship_sunk(char board[BOARD_SIZE][BOARD_SIZE], char ship_symbol){
+    for (int i = 0; i < BOARD_SIZE; i++){
+        for (int j = 0; j < BOARD_SIZE; j++){
+            if (board[i][j] == ship_symbol){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
 
 void check_hit (int x, int y, int current_player){
     char (*opponent_board)[10];
@@ -126,28 +137,26 @@ void check_hit (int x, int y, int current_player){
     if (opponent_board[y][x] != '-' && opponent_board[y][x] != '*'){
         printf("Hit! Coordinates: (%d, %d)!\n", x,y);
         char ship_sym = opponent_board[y][x];
+        if (current_player == 1){
+        player1board[y][x] = '*';
         opponent_board[y][x] = '*';
+        }
         hit = 1;
 
-        int sunk = 1;
-        for (int i = 0; i < 10; i++){
-            for (int j = 0; j < 10; j++){
-                if (opponent_board[i][j] == ship_sym){
-                    sunk = 0;
-                }
-            }
-
+        if (is_ship_sunk(opponent_board, ship_sym)){
+            printf("Ship %c has sunk!\n", ship_sym);
         }
-        if (sunk){
-            printf("Ship %c has sunk!", ship_sym);
-                    }
-    }
-    else {
-        printf("Miss! Coordinates: (%d, %d)!\n", x,y);
-        opponent_board[y][x] = 'm';
+
+}
+
+else {
+    printf("Miss! Coordinates: (%d %d)!\n", x, y);
+    if (current_player == 1){
+        player1board[y][x] = 'm';
     }
 }
 
+}
 
 
 void player_turn(){
@@ -159,15 +168,15 @@ void player_turn(){
         scanf("%d %d", &x, &y);
 
         if (x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE){
-            printf("Invalid Coordiantes! Please try again. \n");
+            printf("Invalid Coordinates! Please try again. \n");
             continue;
         }
 
-        if (player2board[y][x] == '-' || player2board[y][x] == 'm' || player2board[y][x] == '*'){
-            check_hit(x,y,1);
-            valid_guess = 1;
-        } else{
+        if (player2board[y][x] == 'm' || player2board[y][x] == '*'){
             printf("You already guess this spot! Try again!");
+        } else{
+           check_hit(x,y,1);
+           valid_guess = 1;
         }
   }
     
@@ -218,7 +227,8 @@ void startgame(){
     automatically_place_ships3(&current_player);
 
     while (!all_ships_sunk(player1board) && !all_ships_sunk(player2board)){
-       // ("clear");
+       
+        system("pause"); // only works on windows
 
         printf("Player 1's Board:\n");
         display_board(player1board);
@@ -247,7 +257,7 @@ log_stats();
 int all_ships_sunk (char board[BOARD_SIZE][BOARD_SIZE]){
     for (int i = 0; i < 10; i++){
         for (int j = 0; j < 10; j++){
-            if (board[i][j] != '-' && board[i][j] != 'X' && board[i][j] != '0'){
+            if (board[i][j] != '-' && board[i][j] != '*' && board[i][j] != '0'){
                 return 0;
             }
         }
@@ -331,7 +341,8 @@ void manually_place_ships2(int *current_player){
 
     for (int shipnum = 0; shipnum < 5; shipnum++){
         int valid = 0;
-
+        display_board(player1board);
+        
         while (!valid){
             printf("Do you want to place your %s horizontally or vertically? Type H for horizontally and V for vertically", ship_names[shipnum]);
             scanf(" %c", &hor_ver);
@@ -349,7 +360,6 @@ void manually_place_ships2(int *current_player){
                 continue;
             }
             
-
 
             int overlap = 0;
             for (int i = 0; i < ship_sizes[shipnum]; i++){
@@ -402,6 +412,7 @@ void manually_place_ships2(int *current_player){
     }
 
     valid = 1;
+    
  }
 
 
