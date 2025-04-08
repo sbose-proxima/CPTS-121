@@ -7,7 +7,7 @@ void initialize_game_board();
 void change_player(int *current_player);
 int select_who_starts_first();
 void log_stats();
-void update_stats(int hit, int current_player);
+void update_stats(int hit, int sunk, int miss, int current_player);
 void check_hit (int x, int y, int current_player);
 void startgame();
 int all_ships_sunk(char board[10][10]);
@@ -22,5 +22,6 @@ typedef struct {
     int total_hits;
     int total_misses;
     int total_shots;
+    int sunk;
     float hit_miss_ratio;
 } Stats;
