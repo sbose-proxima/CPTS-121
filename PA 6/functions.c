@@ -74,17 +74,17 @@ int select_who_starts_first(){
 
 void log_stats(){
     FILE *infile = fopen("./Battleship.log", "a");
-    fprintf(infile, "Player 1 stats: \nHits: %d\nMisses: %d\nTotal Shots:%d\nHit/Miss Ratio: %.2f\n\n",
-    player1_stats.total_hits, player1_stats.total_misses, player1_stats.total_shots, player1_stats.hit_miss_ratio);
+    fprintf(infile, "Player 1 stats: \nHits: %d\nMisses: %d\nTotal Shots:%d\nHit/Miss Ratio: %.2f\nTotal Sunk: %d\n\n",
+    player1_stats.total_hits, player1_stats.total_misses, player1_stats.total_shots, player1_stats.hit_miss_ratio, player1_stats.sunk);
 
-    fprintf(infile, "Player 2 stats:\nHits: %d\nMisses: %d\nTotal Shots:%d\nHit/Miss Ratio: %.2f\n\n ", 
-    player2_stats.total_hits, player2_stats.total_misses, player2_stats.total_shots, player2_stats.hit_miss_ratio);
+    fprintf(infile, "Player 2 stats:\nHits: %d\nMisses: %d\nTotal Shots:%d\nHit/Miss Ratio: %.2f\nTotal Sunk: %d\n ", 
+    player2_stats.total_hits, player2_stats.total_misses, player2_stats.total_shots, player2_stats.hit_miss_ratio, player2_stats.sunk);
 
     
     fclose(infile);
 }
 
-void update_stats(int hit, int current_player){
+void update_stats(int hit, int sunk, int miss, int current_player){
     Stats *stats;
 
     if (current_player == 1){
@@ -97,9 +97,17 @@ void update_stats(int hit, int current_player){
 
     if (hit){
         stats->total_hits++;
-    } else{
+    } 
+
+    if (miss){
         stats->total_misses++;
     }
+
+    if(sunk){
+        stats->sunk++;
+    }
+
+
 
     stats-> total_shots = stats->total_hits+stats->total_misses;
 
@@ -125,6 +133,8 @@ int is_ship_sunk(char board[BOARD_SIZE][BOARD_SIZE], char ship_symbol){
 void check_hit (int x, int y, int current_player){
     char (*opponent_board)[10];
     int hit = 0;
+    int sunk = 0;
+    int miss = 0;
 
     if (current_player == 1){
         opponent_board = player2board;
@@ -145,17 +155,19 @@ void check_hit (int x, int y, int current_player){
 
         if (is_ship_sunk(opponent_board, ship_sym)){
             printf("Ship %c has sunk!\n", ship_sym);
+            sunk = 1;
         }
 
 }
 
 else {
     printf("Miss! Coordinates: (%d %d)!\n", x, y);
+    miss = 1;
     if (current_player == 1){
         player1board[y][x] = 'm';
     }
 }
-
+update_stats(hit, sunk, miss, current_player);
 }
 
 
@@ -195,6 +207,7 @@ void computer_turn(){
 
     printf("Computer is guessing coordinates (%d, %d)...", x, y);
     check_hit(x,y,2);
+
 
     if (player1board[y][x] == '*'){
         printf("Computer hit a ship!\n");
