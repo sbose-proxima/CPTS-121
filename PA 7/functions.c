@@ -93,12 +93,13 @@ void start_game(int deck[4][13], const char *wFace[], const char *wSuit[]){
 	int play = 1;
 
 	while (play){
+		int current_card = 1;
 		Hand player = {0}, dealer = {0};
 
 		shuffle(deck);
 
-		deal(deck, &player, 1);
-		deal(deck, &dealer, 6);
+		deal(deck, &player, &current_card);
+		deal(deck, &dealer, &current_card);
 
 	printf("Your hand:\n");
 	display_hand(&player, wFace, wSuit);
@@ -156,13 +157,13 @@ int play_again(){
 }
 
 
-void deal(const int deck[4][13], Hand *h, int card_num){
+void deal(const int deck[4][13], Hand *h, int *card_num){
 	int card_count = 0;
 
-	for (int card = card_num; card <= 52 && card_count < 5; card++){
+	for (; *card_num <= 52 && card_count < 5; (*card_num)++){
 		for (int row = 0; row < 4; row++){
 			for (int col = 0; col < 13; col++){
-				if (deck[row][col] == card){
+				if (deck[row][col] == *card_num){
 					h->cards[card_count].face_value = col;
 					h->cards[card_count].suit = row;
 					card_count++;
@@ -207,8 +208,8 @@ int determine_flush(Hand *h){
 
 
 int determine_pair(Hand *h){
-	for (int i = 0; i < 5; i++){
-		for (int j = 0; j < 5; j++){
+	for (int i = 0; i < 4; i++){
+		for (int j = i+1; j < 5; j++){
 			if (h->cards[i].face_value == h->cards[j].face_value){
 				return 1;
 			}
