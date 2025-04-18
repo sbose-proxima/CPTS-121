@@ -18,7 +18,7 @@ void display_hand(Hand *h, const char *wFace[], const char *wSuit[]);
 void replace_hand(Hand *h, const char *wFace[], const char *wSuit[]);
 void start_game(int deck[4][13], const char *wFace[], const char *wSuit[]);
 int play_again();
-void deal(const int deck[4][13], Hand *h, int card_num);
+void deal(const int deck[4][13], Hand *h, int *card_num);
 int num_of_a_kind(Hand *h, int num);
 int determine_flush(Hand *h);
 int determine_pair(Hand *h);
